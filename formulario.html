@@ -1,0 +1,59 @@
+
+<div class="faq-content">
+  <h4>Have any question?</h4>
+  <div class="faq-quote">
+      <div class="row">
+          <form id="contactForm" action="send_email.php" method="POST" class="contact-form">
+              <div class="col-sm-12">
+                  <input id="name" name="name" class="form-control" placeholder="Name" required data-error="Please enter your name" type="text">
+                  <div class="help-block with-errors"></div>
+                  <input class="email form-control" id="email" name="email" placeholder="Email" required data-error="Please enter your email" type="email">
+                  <div class="help-block"></div>
+                  <input class="form-control" id="phone" name="phone" placeholder="Phone Number" required data-error="Please enter your phone number" type="tel">
+                  <div class="help-block"></div>
+              </div>
+              <div class="col-sm-12">
+                  <textarea id="message" name="message" rows="7" placeholder="Message" class="form-control" required data-error="Write your message"></textarea>
+                  <div class="help-block with-errors"></div>
+                  <button type="submit" id="submit" class="quote-btn">Submit</button>
+                  <div id="msgSubmit" class="h3 text-center hidden"></div>
+                  <div class="clearfix"></div>
+              </div>
+          </form>
+      </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('contactForm').onsubmit = function(event) {
+      event.preventDefault();  // Prevenir el envío del formulario
+
+      // Recoger los valores del formulario
+      var name = document.getElementById('name').value;
+      var email = document.getElementById('email').value;
+      var phone = document.getElementById('phone').value;
+      var message = document.getElementById('message').value;
+
+      // Crear el mensaje para WhatsApp
+      var whatsappMessage = `Hola, soy ${name}. Mi correo es ${email}. Mi número de teléfono es ${phone}. ${message}`;
+      var whatsappUrl = `https://api.whatsapp.com/send?phone=+59895484731&text=${encodeURIComponent(whatsappMessage)}`;
+
+      // Crear un objeto FormData para enviar los datos del formulario
+      var formData = new FormData(document.getElementById('contactForm'));
+
+      // Enviar los datos del formulario usando fetch
+      fetch('send_email.php', {
+          method: 'POST',
+          body: formData
+      }).then(response => response.text())
+        .then(result => {
+            console.log(result);  // Imprimir el resultado del servidor
+            // Redirigir a WhatsApp
+            window.location.href = whatsappUrl;
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+
+      return false;  // Prevenir que el formulario se envíe antes de la redirección
+  }
+</script>
